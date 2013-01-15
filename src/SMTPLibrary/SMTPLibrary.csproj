@@ -55,6 +55,7 @@
     <Compile Include="Commands\CommandVrfy.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="FileProcessor.cs" />
     <Compile Include="IProcessor.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

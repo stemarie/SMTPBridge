@@ -64,7 +64,9 @@ namespace SMTPLibrary.Commands
             if ((heloChars[0] == '.') || (heloChars[0] == '-')) return false;
 
             // must contain at least a dot
-            //if (!heloStr.Contains('.')) return false;
+#if !DEBUG
+            if (!heloStr.Contains('.')) return false;
+#endif
 
             // can only contain valid chars
             for (int i = 0; i < heloChars.Length; i++)
@@ -86,8 +88,10 @@ namespace SMTPLibrary.Commands
             else
             {
                 // run a check on the domain
-                //bool result = Context.Session.CheckMailAddr("postmaster@" + heloStr);
-                //if (false == result) return false;
+#if !DEBUG
+                bool result = Context.Session.CheckMailAddr("postmaster@" + heloStr);
+                if (false == result) return false;
+#endif
             }
 
             return true;

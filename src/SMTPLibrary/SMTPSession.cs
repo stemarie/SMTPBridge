@@ -118,9 +118,7 @@ namespace SMTPLibrary
 
                 _stream = _client.GetStream();
                 _reader = new StreamReader(_stream);
-                _writer = new StreamWriter(_stream);
-                _writer.NewLine = "\r\n";
-                _writer.AutoFlush = true;
+                _writer = new StreamWriter(_stream) { NewLine = "\r\n", AutoFlush = true };
 
                 AppGlobals.WriteConsole(Resources.MSG_Connected, ClientIP, _sessCount, _sessionID);
                 _initOk = true;
@@ -208,7 +206,8 @@ namespace SMTPLibrary
                         response = Resources.MSG_422_MailboxExceededQuota;
                     else
                     {
-                        StoreMailMsg(mailMsg);
+                        IProcessor processor = new FileProcessor { Context = context };
+                        processor.Process(mailMsg);
                         if (AppGlobals.DoTempFail)
                         {
                             // emit a tempfail AFTER storing the mail DATA
@@ -458,10 +457,10 @@ namespace SMTPLibrary
             if (parts[1].EndsWith(".")) return false;
             string[] domain = parts[1].Split('.');
             if (domain.Length < 2) return false;
-            for (int p = 0; p < domain.Length; p++)
+            foreach (string t in domain)
             {
-                if (string.IsNullOrEmpty(domain[p])) return false;
-                if (domain[p].StartsWith("-")) return false;
+                if (string.IsNullOrEmpty(t)) return false;
+                if (t.StartsWith("-")) return false;
             }
             string TLD = domain[domain.Length - 1];
             if (TLD.Length < 2) return false;
@@ -518,60 +517,6 @@ namespace SMTPLibrary
                 line = null;
             }
             return line;
-        }
-
-        // stores a mail message to file, notice that the code doesn't even
-        // try to deal with message headers and mime parts nor to check if
-        // they're correct, this isn't the purpose for this code, but willing
-        // to add such parsing/checks, you may either add them here or after
-        // receiving the "." command at end of the DATA stage
-        private void StoreMailMsg(string msgData)
-        {
-            // bump the message counter
-            _msgCount++;
-            if (!AppGlobals.StoreData) return;
-
-            try
-            {
-                // build the pathname of the file used to store this email
-                string filePath = AppGlobals.StorePath;
-                string fileName = "mailmsg-" + Path.GetRandomFileName().Replace('.', '-') + ".txt";
-
-                // record the file name
-                _msgFile = fileName;
-
-                // open the file for writing
-                using (StreamWriter fp = new StreamWriter(filePath + fileName, true))
-                {
-                    fp.WriteLine("X-FakeSMTP-HostName: {0}", AppGlobals.HostName);
-                    fp.WriteLine("X-FakeSMTP-Sessions: count={0}, id={1}", _sessCount, _sessionID);
-                    fp.WriteLine("X-FakeSMTP-MsgCount: {0}", _msgCount);
-                    fp.WriteLine("X-FakeSMTP-SessDate: {0}", _startDate.ToString("u"));
-                    fp.WriteLine("X-FakeSMTP-ClientIP: {0}", ClientIP);
-                    if (null != _dnsListType)
-                        fp.WriteLine("X-FakeSMTP-DnsList: type={0}, list={1}, result={2}", _dnsListType, _dnsListName, _dnsListValue);
-                    else
-                        fp.WriteLine("X-FakeSMTP-DnsList: type={0}, list={1}, result={2}", "notlisted", "none", "0.0.0.0");
-                    fp.WriteLine("X-FakeSMTP-Helo: {0}", HeloStr);
-                    fp.WriteLine("X-FakeSMTP-MailFrom: {0}", MailFrom);
-                    fp.WriteLine("X-FakeSMTP-RcptCount: {0}", RcptTo.Count.ToString());
-                    for (int i = 0; i < RcptTo.Count; i++)
-                        fp.WriteLine("X-FakeSMTP-RcptTo-{0}: {1}", i + 1, RcptTo[i]);
-                    fp.WriteLine("X-FakeSMTP-Counters: noop={0}, vrfy={1}, err={2}", NoopCount, VrfyCount, ErrCount);
-
-                    // write the message data
-                    fp.WriteLine(msgData);
-
-                    // all done, flush and close
-                    fp.Flush();
-                    fp.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                _msgFile = "write_error";
-                Debug.WriteLine("storeMailMsg::Error: " + ex.Message);
-            }
         }
 
         // receive a full data buffer from remote
@@ -650,12 +595,11 @@ namespace SMTPLibrary
             if (string.IsNullOrEmpty(inputStr)) return null;
             string strBuff = inputStr.Trim();
             char[] chars = strBuff.ToCharArray();
-            char chr;
 
             // turn control chars into spaces
             for (int c = 0; c < chars.Length; c++)
             {
-                chr = chars[c];
+                char chr = chars[c];
                 if ((char.IsWhiteSpace(chr) || char.IsControl(chr)) && (!chr.Equals(' ')))
                 {
                     chars[c] = ' '; // turn controls/tabs/... into spaces
@@ -696,15 +640,14 @@ namespace SMTPLibrary
         private bool IsListed(string ip, string[] lists, string listType)
         {
             if ((null == lists) || (lists.Length < 1)) return false;
-            string queryString = null;
-            for (int i = 0; i < lists.Length; i++)
+            foreach (string t in lists)
             {
-                queryString = BuildDnsListQuery(ip, lists[i]);
+                string queryString = BuildDnsListQuery(ip, t);
                 string result = QueryDNS(queryString);
                 if (!string.IsNullOrEmpty(result))
                 {
                     _dnsListType = listType;
-                    _dnsListName = lists[i];
+                    _dnsListName = t;
                     _dnsListValue = result;
                     return true;
                 }
@@ -756,17 +699,14 @@ namespace SMTPLibrary
         // runs a DNS query
         private static string QueryDNS(string query)
         {
-            IPHostEntry entry = null;
             string result = null;
 
             try
             {
-                entry = Dns.GetHostEntry(query);
+                IPHostEntry entry = Dns.GetHostEntry(query);
                 if (null != entry)
                 {
-                    List<string> buff = new List<string>();
-                    for (int i = 0; i < entry.AddressList.Length; i++)
-                        buff.Add(entry.AddressList[i].ToString());
+                    List<string> buff = entry.AddressList.Select(t => t.ToString()).ToList();
                     result = string.Join("+", buff);
                 }
             }
@@ -776,8 +716,6 @@ namespace SMTPLibrary
             }
             return result;
         }
-
-        
 
         // if enabled, logs commands and replies
         private void LogCmdAndResp(string direction, string line)
@@ -801,22 +739,21 @@ namespace SMTPLibrary
             // if (0 == this._rcptTo.Count) return;
 
             // build the log array
-            List<string> cols = new List<string>();
+            List<string> cols = new List<string>
+                {
+                    DateTime.UtcNow.ToString("u"),
+                    _startDate.ToString("u"),
+                    _sessionID,
+                    ClientIP,
+                    HeloStr,
+                    !string.IsNullOrEmpty(MailFrom) ? MailFrom : ""
+                };
 
             // current date/time
-            cols.Add(DateTime.UtcNow.ToString("u"));
 
             // start date, session ID, client IP, helo
-            cols.Add(_startDate.ToString("u"));
-            cols.Add(_sessionID);
-            cols.Add(ClientIP);
-            cols.Add(HeloStr);
 
             // mail from
-            if (!string.IsNullOrEmpty(MailFrom))
-                cols.Add(MailFrom);
-            else
-                cols.Add("");
 
             // rcpt to
             if (RcptTo.Count > 0)
@@ -832,10 +769,7 @@ namespace SMTPLibrary
 
             // message # and message file name (if any)
             cols.Add(_msgCount.ToString());
-            if (!string.IsNullOrEmpty(_msgFile))
-                cols.Add(_msgFile);
-            else
-                cols.Add("-no-file-");
+            cols.Add(!string.IsNullOrEmpty(_msgFile) ? _msgFile : "-no-file-");
 
             // dns listing
             if (!string.IsNullOrEmpty(_dnsListType))
@@ -852,10 +786,7 @@ namespace SMTPLibrary
             }
 
             // early talker
-            if (_earlyTalker)
-                cols.Add("1");
-            else
-                cols.Add("0");
+            cols.Add(_earlyTalker ? "1" : "0");
 
             // noop/vrfy/err
             cols.Add(NoopCount.ToString());
