@@ -1,4 +1,4 @@
-﻿namespace fakeSMTP.Commands
+﻿namespace SMTPLibrary.Commands
 {
     public interface ICommand
     {

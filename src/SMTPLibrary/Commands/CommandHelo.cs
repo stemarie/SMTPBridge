@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Linq;
-using FakeSMTP;
-using fakeSMTP.Properties;
+using SMTPLibrary.Properties;
+using fakeSMTP.Commands;
 
-namespace fakeSMTP.Commands
+namespace SMTPLibrary.Commands
 {
     public class CommandHelo : ICommand
     {
@@ -64,7 +64,7 @@ namespace fakeSMTP.Commands
             if ((heloChars[0] == '.') || (heloChars[0] == '-')) return false;
 
             // must contain at least a dot
-            if (!heloStr.Contains('.')) return false;
+            //if (!heloStr.Contains('.')) return false;
 
             // can only contain valid chars
             for (int i = 0; i < heloChars.Length; i++)
@@ -86,8 +86,8 @@ namespace fakeSMTP.Commands
             else
             {
                 // run a check on the domain
-                bool result = Context.Session.CheckMailAddr("postmaster@" + heloStr);
-                if (false == result) return false;
+                //bool result = Context.Session.CheckMailAddr("postmaster@" + heloStr);
+                //if (false == result) return false;
             }
 
             return true;

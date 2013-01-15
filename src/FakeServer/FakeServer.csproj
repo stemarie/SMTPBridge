@@ -49,9 +49,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\fakeSMTP\FakeSMTP.csproj">
-      <Project>{d54c6359-f6ea-4aa5-b787-1e1691f583dd}</Project>
-      <Name>FakeSMTP</Name>
+    <ProjectReference Include="..\SMTPLibrary\SMTPLibrary.csproj">
+      <Project>{D54C6359-F6EA-4AA5-B787-1E1691F583DD}</Project>
+      <Name>SMTPLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

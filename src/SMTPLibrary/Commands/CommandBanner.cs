@@ -1,7 +1,8 @@
 ﻿using System;
-using fakeSMTP.Properties;
+using SMTPLibrary.Properties;
+using fakeSMTP.Commands;
 
-namespace fakeSMTP.Commands
+namespace SMTPLibrary.Commands
 {
     public class CommandBanner : ICommand
     {

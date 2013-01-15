@@ -22,7 +22,7 @@ using System.IO;
 ** http://ndumbster.sourceforge.net/default.html
 **
 */
-namespace FakeSMTP
+namespace SMTPLibrary
 {
     public class SMTPServer
     {

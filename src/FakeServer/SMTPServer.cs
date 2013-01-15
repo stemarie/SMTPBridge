@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.IO;
-using FakeSMTP;
+using SMTPLibrary;
 
 /*
 ** fakeSMTP: fakes a full blown SMTP server, useful to test mail sending apps

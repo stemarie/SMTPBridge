@@ -7,11 +7,11 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
-using fakeSMTP;
+using SMTPLibrary.Commands;
+using SMTPLibrary.Properties;
 using fakeSMTP.Commands;
-using fakeSMTP.Properties;
 
-namespace FakeSMTP
+namespace SMTPLibrary
 {
     public class SMTPSession : IDisposable
     {
@@ -64,8 +64,8 @@ namespace FakeSMTP
         private readonly NetworkStream _stream;          // network stream for I/O
         private readonly StreamReader _reader;           // network reader
         private readonly StreamWriter _writer;           // network writer
-        private readonly long _sessCount = 0;            // current session count
-        private readonly string _sessionID = null;       // ID for this session
+        public readonly long _sessCount = 0;            // current session count
+        public readonly string _sessionID = null;       // ID for this session
         private long _lastMsgID = -1;                    // last logged message #
         private bool _timedOut = false;                  // true = the connection timed out
 
@@ -74,21 +74,21 @@ namespace FakeSMTP
         internal readonly List<string> MailBoxes = new List<string>();           // list of locally handled mailboxes
 
         // session
-        private DateTime _startDate = DateTime.UtcNow;       // session start datetime
-        internal readonly string ClientIP = null;                   // remote IP
-        private string _dnsListType = null;                // type of listing
-        private string _dnsListName = null;                // name of DNS list flagging the IP
-        private string _dnsListValue = null;               // value returned by the DNS list
+        public DateTime _startDate = DateTime.UtcNow;       // session start datetime
+        public readonly string ClientIP = null;                   // remote IP
+        public string _dnsListType = null;                // type of listing
+        public string _dnsListName = null;                // name of DNS list flagging the IP
+        public string _dnsListValue = null;               // value returned by the DNS list
         internal CmdID LastCmd = CmdID.Invalid;           // last cmd issued
-        internal string HeloStr = null;                    // HELO/EHLO string
-        internal string MailFrom = null;                   // MAIL FROM address
-        internal List<string> RcptTo = new List<string>();       // RCPT TO list
-        private long _msgCount = 0;                      // # of messages for this session
-        private string _msgFile = null;                    // message file storage
+        public string HeloStr = null;                    // HELO/EHLO string
+        public string MailFrom = null;                   // MAIL FROM address
+        public List<string> RcptTo = new List<string>();       // RCPT TO list
+        public long _msgCount = 0;                      // # of messages for this session
+        public string _msgFile = null;                    // message file storage
         private bool _earlyTalker = false;               // true the client is a "early talker"
-        internal int NoopCount = 0;                     // # of NOOP issued
-        internal int ErrCount = 0;                      // # of errors
-        internal int VrfyCount = 0;                     // # of VRFY/EXPN
+        public int NoopCount = 0;                     // # of NOOP issued
+        public int ErrCount = 0;                      // # of errors
+        public int VrfyCount = 0;                     // # of VRFY/EXPN
 
         // workareas
         internal string MailBox = null;                    // mailbox part of a mail address
@@ -208,7 +208,7 @@ namespace FakeSMTP
                         response = Resources.MSG_422_MailboxExceededQuota;
                     else
                     {
-                        ProcessMailMsg(mailMsg);
+                        StoreMailMsg(mailMsg);
                         if (AppGlobals.DoTempFail)
                         {
                             // emit a tempfail AFTER storing the mail DATA
@@ -520,6 +520,60 @@ namespace FakeSMTP
             return line;
         }
 
+        // stores a mail message to file, notice that the code doesn't even
+        // try to deal with message headers and mime parts nor to check if
+        // they're correct, this isn't the purpose for this code, but willing
+        // to add such parsing/checks, you may either add them here or after
+        // receiving the "." command at end of the DATA stage
+        private void StoreMailMsg(string msgData)
+        {
+            // bump the message counter
+            _msgCount++;
+            if (!AppGlobals.StoreData) return;
+
+            try
+            {
+                // build the pathname of the file used to store this email
+                string filePath = AppGlobals.StorePath;
+                string fileName = "mailmsg-" + Path.GetRandomFileName().Replace('.', '-') + ".txt";
+
+                // record the file name
+                _msgFile = fileName;
+
+                // open the file for writing
+                using (StreamWriter fp = new StreamWriter(filePath + fileName, true))
+                {
+                    fp.WriteLine("X-FakeSMTP-HostName: {0}", AppGlobals.HostName);
+                    fp.WriteLine("X-FakeSMTP-Sessions: count={0}, id={1}", _sessCount, _sessionID);
+                    fp.WriteLine("X-FakeSMTP-MsgCount: {0}", _msgCount);
+                    fp.WriteLine("X-FakeSMTP-SessDate: {0}", _startDate.ToString("u"));
+                    fp.WriteLine("X-FakeSMTP-ClientIP: {0}", ClientIP);
+                    if (null != _dnsListType)
+                        fp.WriteLine("X-FakeSMTP-DnsList: type={0}, list={1}, result={2}", _dnsListType, _dnsListName, _dnsListValue);
+                    else
+                        fp.WriteLine("X-FakeSMTP-DnsList: type={0}, list={1}, result={2}", "notlisted", "none", "0.0.0.0");
+                    fp.WriteLine("X-FakeSMTP-Helo: {0}", HeloStr);
+                    fp.WriteLine("X-FakeSMTP-MailFrom: {0}", MailFrom);
+                    fp.WriteLine("X-FakeSMTP-RcptCount: {0}", RcptTo.Count.ToString());
+                    for (int i = 0; i < RcptTo.Count; i++)
+                        fp.WriteLine("X-FakeSMTP-RcptTo-{0}: {1}", i + 1, RcptTo[i]);
+                    fp.WriteLine("X-FakeSMTP-Counters: noop={0}, vrfy={1}, err={2}", NoopCount, VrfyCount, ErrCount);
+
+                    // write the message data
+                    fp.WriteLine(msgData);
+
+                    // all done, flush and close
+                    fp.Flush();
+                    fp.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                _msgFile = "write_error";
+                Debug.WriteLine("storeMailMsg::Error: " + ex.Message);
+            }
+        }
+
         // receive a full data buffer from remote
         private string RecvData()
         {
@@ -723,59 +777,7 @@ namespace FakeSMTP
             return result;
         }
 
-        // stores a mail message to file, notice that the code doesn't even
-        // try to deal with message headers and mime parts nor to check if
-        // they're correct, this isn't the purpose for this code, but willing
-        // to add such parsing/checks, you may either add them here or after
-        // receiving the "." command at end of the DATA stage
-        private void ProcessMailMsg(string msgData)
-        {
-            // bump the message counter
-            _msgCount++;
-            if (!AppGlobals.StoreData) return;
-
-            try
-            {
-                // build the pathname of the file used to store this email
-                string filePath = AppGlobals.StorePath;
-                string fileName = "mailmsg-" + Path.GetRandomFileName().Replace('.', '-') + ".txt";
-
-                // record the file name
-                _msgFile = fileName;
-
-                // open the file for writing
-                using (StreamWriter fp = new StreamWriter(filePath + fileName, true))
-                {
-                    fp.WriteLine("X-FakeSMTP-HostName: {0}", AppGlobals.HostName);
-                    fp.WriteLine("X-FakeSMTP-Sessions: count={0}, id={1}", _sessCount, _sessionID);
-                    fp.WriteLine("X-FakeSMTP-MsgCount: {0}", _msgCount);
-                    fp.WriteLine("X-FakeSMTP-SessDate: {0}", _startDate.ToString("u"));
-                    fp.WriteLine("X-FakeSMTP-ClientIP: {0}", ClientIP);
-                    if (null != _dnsListType)
-                        fp.WriteLine("X-FakeSMTP-DnsList: type={0}, list={1}, result={2}", _dnsListType, _dnsListName, _dnsListValue);
-                    else
-                        fp.WriteLine("X-FakeSMTP-DnsList: type={0}, list={1}, result={2}", "notlisted", "none", "0.0.0.0");
-                    fp.WriteLine("X-FakeSMTP-Helo: {0}", HeloStr);
-                    fp.WriteLine("X-FakeSMTP-MailFrom: {0}", MailFrom);
-                    fp.WriteLine("X-FakeSMTP-RcptCount: {0}", RcptTo.Count.ToString());
-                    for (int i = 0; i < RcptTo.Count; i++)
-                        fp.WriteLine("X-FakeSMTP-RcptTo-{0}: {1}", i + 1, RcptTo[i]);
-                    fp.WriteLine("X-FakeSMTP-Counters: noop={0}, vrfy={1}, err={2}", NoopCount, VrfyCount, ErrCount);
-
-                    // write the message data
-                    fp.WriteLine(msgData);
-
-                    // all done, flush and close
-                    fp.Flush();
-                    fp.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                _msgFile = "write_error";
-                Debug.WriteLine("storeMailMsg::Error: " + ex.Message);
-            }
-        }
+        
 
         // if enabled, logs commands and replies
         private void LogCmdAndResp(string direction, string line)

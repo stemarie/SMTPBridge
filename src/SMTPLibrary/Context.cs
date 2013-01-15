@@ -1,6 +1,4 @@
-﻿using FakeSMTP;
-
-namespace fakeSMTP
+﻿namespace SMTPLibrary
 {
     public class Context
     {

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Net;
 using System.IO;
 
-namespace FakeSMTP
+namespace SMTPLibrary
 {
     public static class AppGlobals
     {

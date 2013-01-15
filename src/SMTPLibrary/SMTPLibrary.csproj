@@ -7,8 +7,8 @@
     <ProjectGuid>{D54C6359-F6EA-4AA5-B787-1E1691F583DD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>fakeSMTP</RootNamespace>
-    <AssemblyName>fakeSMTP</AssemblyName>
+    <RootNamespace>SMTPLibrary</RootNamespace>
+    <AssemblyName>SMTPLibrary</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -55,6 +55,7 @@
     <Compile Include="Commands\CommandVrfy.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="IProcessor.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
