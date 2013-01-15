@@ -1,0 +1,235 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="MSG_Connected" xml:space="preserve">
+    <value>client {0} connected, sess={1}, ID={2}.</value>
+  </data>
+  <data name="MSG_Exception" xml:space="preserve">
+    <value>SMTPsession::Exception: </value>
+  </data>
+  <data name="MSG_421_ServiceTemporarilyUnavailable" xml:space="preserve">
+    <value>421 Service temporarily unavailable, closing transmission channel.</value>
+  </data>
+  <data name="MSG_554_MisbehavedSMTPSession" xml:space="preserve">
+    <value>554 Misbehaved SMTP session (EarlyTalker)</value>
+  </data>
+  <data name="MSG_442_ConnectionTimedOut" xml:space="preserve">
+    <value>442 Connection timed out.</value>
+  </data>
+  <data name="MSG_422_MailboxExceededQuota" xml:space="preserve">
+    <value>422 Recipient mailbox exceeded quota limit.</value>
+  </data>
+  <data name="MSG_451_SessionMessagesCountExceeded" xml:space="preserve">
+    <value>451 Session messages count exceeded</value>
+  </data>
+  <data name="MSG_550_MaxErrors" xml:space="preserve">
+    <value>550 Max errors exceeded</value>
+  </data>
+  <data name="MSG_451_MaxRecipients" xml:space="preserve">
+    <value>451 Max recipient verification exceeded</value>
+  </data>
+  <data name="MSG_451_MaxNoop" xml:space="preserve">
+    <value>451 Max NOOP count exceeded</value>
+  </data>
+  <data name="MSG_452_TooManyRecipients" xml:space="preserve">
+    <value>452 Too many recipients</value>
+  </data>
+  <data name="MSG_Disconnected" xml:space="preserve">
+    <value>client {0} disconnected, sess={1}, ID={2}.</value>
+  </data>
+  <data name="MSG_220_Banner" xml:space="preserve">
+    <value>220 {0} MailRecv 0.1.2-b4; {1}</value>
+  </data>
+  <data name="MSG_501_NeedsArgument" xml:space="preserve">
+    <value>501 {0} needs argument</value>
+  </data>
+  <data name="MSG_503_AlreadySent" xml:space="preserve">
+    <value>503 you already sent {0} ...</value>
+  </data>
+  <data name="MSG_501_Invalid" xml:space="preserve">
+    <value>501 Invalid {0}</value>
+  </data>
+  <data name="MSG_501_Spoofed" xml:space="preserve">
+    <value>501 spoofed {0}</value>
+  </data>
+  <data name="MSG_250_1" xml:space="preserve">
+    <value>250 Hello {0} ([{1}]), nice to meet you.</value>
+  </data>
+  <data name="MSG_250_2" xml:space="preserve">
+    <value>250 Hello {0} ([{1}]), nice to meet you.
+250-HELP
+250-VRFY
+250-EXPN
+250 NOOP</value>
+  </data>
+  <data name="MSG_503_NoHeloEhlo" xml:space="preserve">
+    <value>503 HELO/EHLO Command not issued</value>
+  </data>
+  <data name="MSG_503_NestedMailCommand" xml:space="preserve">
+    <value>503 Nested MAIL command</value>
+  </data>
+  <data name="MSG_553_InvalidAddress" xml:space="preserve">
+    <value>553 Invalid address {0}</value>
+  </data>
+  <data name="MSG_250_SenderOk" xml:space="preserve">
+    <value>250 {0}... Sender ok</value>
+  </data>
+  <data name="MSG_503_NeedMailBeforeRcpt" xml:space="preserve">
+    <value>503 Need MAIL before RCPT</value>
+  </data>
+  <data name="MSG_530_RelayingNotAllowed" xml:space="preserve">
+    <value>530 Relaying not allowed for policy reasons</value>
+  </data>
+  <data name="MSG_553_UnknownEmailAddress" xml:space="preserve">
+    <value>553 Unknown email address {0}</value>
+  </data>
+  <data name="MSG_250_RecipientOk" xml:space="preserve">
+    <value>250 {0}... Recipient ok</value>
+  </data>
+  <data name="MSG_471_BadOrMissingRcpt" xml:space="preserve">
+    <value>471 Bad or missing RCPT command</value>
+  </data>
+  <data name="MSG_354_StartMailInput" xml:space="preserve">
+    <value>354 Start mail input; end with &lt;CRLF&gt;.&lt;CRLF&gt;</value>
+  </data>
+  <data name="MSG_250_ResetOk" xml:space="preserve">
+    <value>250 Reset Ok</value>
+  </data>
+  <data name="MSG_221_ClosingConnection" xml:space="preserve">
+    <value>221 Closing connection.</value>
+  </data>
+  <data name="MSG_252_CannotVrfy" xml:space="preserve">
+    <value>252 Cannot VRFY user; try RCPT to attempt delivery (or try finger)</value>
+  </data>
+  <data name="MSG_250_OK" xml:space="preserve">
+    <value>250 ({0}) OK</value>
+  </data>
+  <data name="MSG_250_OK2" xml:space="preserve">
+    <value>250 OK</value>
+  </data>
+  <data name="MSG_250_OK3" xml:space="preserve">
+    <value>250 {0} OK</value>
+  </data>
+  <data name="MSG_500_CommandUnrecognized1" xml:space="preserve">
+    <value>500 Command unrecognized</value>
+  </data>
+  <data name="MSG_500_CommandUnrecognized2" xml:space="preserve">
+    <value>500 Command unrecognized ({0})</value>
+  </data>
+</root>

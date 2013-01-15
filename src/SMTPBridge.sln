@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeSMTP", "fakeSMTP\FakeSMTP.csproj", "{D54C6359-F6EA-4AA5-B787-1E1691F583DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeServer", "FakeServer\FakeServer.csproj", "{7807F9D9-8AB1-4682-AB13-F7A2EC8154C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FakeClient", "FakeClient\FakeClient.csproj", "{66FB913B-AE5E-4FBD-834E-E3B27D93800F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D54C6359-F6EA-4AA5-B787-1E1691F583DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D54C6359-F6EA-4AA5-B787-1E1691F583DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D54C6359-F6EA-4AA5-B787-1E1691F583DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D54C6359-F6EA-4AA5-B787-1E1691F583DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7807F9D9-8AB1-4682-AB13-F7A2EC8154C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7807F9D9-8AB1-4682-AB13-F7A2EC8154C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7807F9D9-8AB1-4682-AB13-F7A2EC8154C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7807F9D9-8AB1-4682-AB13-F7A2EC8154C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66FB913B-AE5E-4FBD-834E-E3B27D93800F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66FB913B-AE5E-4FBD-834E-E3B27D93800F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66FB913B-AE5E-4FBD-834E-E3B27D93800F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66FB913B-AE5E-4FBD-834E-E3B27D93800F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
