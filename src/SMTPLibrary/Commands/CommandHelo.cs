@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Linq;
 using SMTPLibrary.Properties;
-using fakeSMTP.Commands;
 
 namespace SMTPLibrary.Commands
 {

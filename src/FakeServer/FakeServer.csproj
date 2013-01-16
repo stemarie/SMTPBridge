@@ -53,6 +53,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SMTPLibrary.BaseProcessors\SMTPLibrary.BaseProcessors.csproj">
+      <Project>{c91393b4-df86-4e6b-b75c-c93f4f94f1e2}</Project>
+      <Name>SMTPLibrary.BaseProcessors</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SMTPLibrary\SMTPLibrary.csproj">
       <Project>{D54C6359-F6EA-4AA5-B787-1E1691F583DD}</Project>
       <Name>SMTPLibrary</Name>

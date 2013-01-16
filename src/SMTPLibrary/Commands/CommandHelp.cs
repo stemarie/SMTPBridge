@@ -1,7 +1,4 @@
-﻿using SMTPLibrary;
-using SMTPLibrary.Commands;
-
-namespace fakeSMTP.Commands
+﻿namespace SMTPLibrary.Commands
 {
     public class CommandHelp : ICommand
     {

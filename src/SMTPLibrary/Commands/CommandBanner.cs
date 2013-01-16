@@ -1,6 +1,5 @@
 ﻿using System;
 using SMTPLibrary.Properties;
-using fakeSMTP.Commands;
 
 namespace SMTPLibrary.Commands
 {

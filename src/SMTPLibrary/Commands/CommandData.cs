@@ -1,6 +1,4 @@
-﻿using fakeSMTP.Commands;
-
-namespace SMTPLibrary.Commands
+﻿namespace SMTPLibrary.Commands
 {
     public class CommandData:ICommand
     {

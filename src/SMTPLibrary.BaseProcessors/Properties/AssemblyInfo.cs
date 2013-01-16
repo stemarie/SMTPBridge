@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SMTP Library")]
+[assembly: AssemblyTitle("SMTPLibrary.BaseProcessors")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Karell Ste-Marie")]
-[assembly: AssemblyProduct("SMTP Library")]
+[assembly: AssemblyProduct("SMTPLibrary.BaseProcessors")]
 [assembly: AssemblyCopyright("Copyright © Karell Ste-Marie 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("55c698a6-4976-4d11-a168-232f05674fff")]
+[assembly: Guid("a93de0c7-9f6a-45d8-993e-46f9506567dc")]
 
 // Version information for an assembly consists of the following four values:
 //

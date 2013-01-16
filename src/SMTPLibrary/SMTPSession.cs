@@ -9,7 +9,6 @@ using System.IO;
 using SMTPLibrary.Commands;
 using SMTPLibrary.Properties;
 using StructureMap;
-using fakeSMTP.Commands;
 
 namespace SMTPLibrary
 {
