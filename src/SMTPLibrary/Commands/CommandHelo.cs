@@ -69,8 +69,10 @@ namespace SMTPLibrary.Commands
 #endif
 
             // can only contain valid chars
-            for (int i = 0; i < heloChars.Length; i++)
-                if (!SMTPSession.HELO_CHARS.Contains(heloChars[i])) return false;
+            if (heloChars.Any(t => !SMTPSession.HELO_CHARS.Contains(t)))
+            {
+                return false;
+            }
 
             // if starts with "[" the bracket must match and the
             // enclosed string must be a valid IP address (and
@@ -85,14 +87,14 @@ namespace SMTPLibrary.Commands
                 if (!IPAddress.TryParse(ipAddr, out ip)) return false;
                 //if (IsPrivateIP(ipAddr)) return false;
             }
+#if !DEBUG
             else
             {
                 // run a check on the domain
-#if !DEBUG
                 bool result = Context.Session.CheckMailAddr("postmaster@" + heloStr);
                 if (false == result) return false;
-#endif
             }
+#endif
 
             return true;
         }

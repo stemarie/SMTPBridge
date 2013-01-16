@@ -1,26 +1,11 @@
-﻿using SMTPLibrary.Properties;
-using fakeSMTP.Commands;
-
-namespace SMTPLibrary.Commands
+﻿namespace SMTPLibrary.Commands
 {
     public class CommandDot : ICommand
     {
         public Context Context { get; set; }
         public string GetResponse()
         {
-            return cmd_data(Context.CmdLine);
-        }
-
-        // DATA
-        private string cmd_data(string cmdLine)
-        {
-            if (Context.Session.RcptTo.Count < 1)
-            {
-                Context.Session.ErrCount++;
-                return Resources.MSG_471_BadOrMissingRcpt;
-            }
-            Context.Session.LastCmd = SMTPSession.CmdID.Data;
-            return Resources.MSG_354_StartMailInput;
+            return cmd_dot(Context.CmdLine);
         }
 
         // end of DATA (dot)

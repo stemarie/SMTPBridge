@@ -14,7 +14,7 @@ namespace SMTPLibrary
         private void StoreMailMsg(string msgData)
         {
             // bump the message counter
-            Context.Session._msgCount++;
+            Context.Session.MsgCount++;
             if (!AppGlobals.StoreData) return;
 
             try
@@ -24,18 +24,18 @@ namespace SMTPLibrary
                 string fileName = "mailmsg-" + Path.GetRandomFileName().Replace('.', '-') + ".txt";
 
                 // record the file name
-                Context.Session._msgFile = fileName;
+                Context.Session.MsgFile = fileName;
 
                 // open the file for writing
                 using (StreamWriter fp = new StreamWriter(filePath + fileName, true))
                 {
                     fp.WriteLine("X-FakeSMTP-HostName: {0}", AppGlobals.HostName);
                     fp.WriteLine("X-FakeSMTP-Sessions: count={0}, id={1}", Context.Session._sessCount, Context.Session._sessionID);
-                    fp.WriteLine("X-FakeSMTP-MsgCount: {0}", Context.Session._msgCount);
-                    fp.WriteLine("X-FakeSMTP-SessDate: {0}", Context.Session._startDate.ToString("u"));
+                    fp.WriteLine("X-FakeSMTP-MsgCount: {0}", Context.Session.MsgCount);
+                    fp.WriteLine("X-FakeSMTP-SessDate: {0}", Context.Session.StartDate.ToString("u"));
                     fp.WriteLine("X-FakeSMTP-ClientIP: {0}", Context.Session.ClientIP);
-                    if (null != Context.Session._dnsListType)
-                        fp.WriteLine("X-FakeSMTP-DnsList: type={0}, list={1}, result={2}", Context.Session._dnsListType, Context.Session._dnsListName, Context.Session._dnsListValue);
+                    if (null != Context.Session.DNSListType)
+                        fp.WriteLine("X-FakeSMTP-DnsList: type={0}, list={1}, result={2}", Context.Session.DNSListType, Context.Session.DNSListName, Context.Session.DNSListValue);
                     else
                         fp.WriteLine("X-FakeSMTP-DnsList: type={0}, list={1}, result={2}", "notlisted", "none", "0.0.0.0");
                     fp.WriteLine("X-FakeSMTP-Helo: {0}", Context.Session.HeloStr);
@@ -55,7 +55,7 @@ namespace SMTPLibrary
             }
             catch (Exception ex)
             {
-                Context.Session._msgFile = "write_error";
+                Context.Session.MsgFile = "write_error";
                 Debug.WriteLine("storeMailMsg::Error: " + ex.Message);
             }
         }

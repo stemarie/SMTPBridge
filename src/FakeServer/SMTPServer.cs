@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.IO;
 using SMTPLibrary;
+using StructureMap;
 
 /*
 ** fakeSMTP: fakes a full blown SMTP server, useful to test mail sending apps
@@ -36,6 +37,11 @@ namespace FakeServer
         // main entry point
         static int Main(string[] args)
         {
+            ObjectFactory.Initialize(x =>
+            {
+                x.For<IProcessor>().Use<FileProcessor>();
+            });
+
             // our internal stuff
             IPAddress listenAddr = IPAddress.Loopback;
             int listenPort = 25;

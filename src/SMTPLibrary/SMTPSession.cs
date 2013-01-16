@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +8,7 @@ using System.Net.Sockets;
 using System.IO;
 using SMTPLibrary.Commands;
 using SMTPLibrary.Properties;
+using StructureMap;
 using fakeSMTP.Commands;
 
 namespace SMTPLibrary
@@ -74,17 +74,17 @@ namespace SMTPLibrary
         internal readonly List<string> MailBoxes = new List<string>();           // list of locally handled mailboxes
 
         // session
-        public DateTime _startDate = DateTime.UtcNow;       // session start datetime
+        public DateTime StartDate = DateTime.UtcNow;       // session start datetime
         public readonly string ClientIP = null;                   // remote IP
-        public string _dnsListType = null;                // type of listing
-        public string _dnsListName = null;                // name of DNS list flagging the IP
-        public string _dnsListValue = null;               // value returned by the DNS list
+        public string DNSListType = null;                // type of listing
+        public string DNSListName = null;                // name of DNS list flagging the IP
+        public string DNSListValue = null;               // value returned by the DNS list
         internal CmdID LastCmd = CmdID.Invalid;           // last cmd issued
         public string HeloStr = null;                    // HELO/EHLO string
         public string MailFrom = null;                   // MAIL FROM address
         public List<string> RcptTo = new List<string>();       // RCPT TO list
-        public long _msgCount = 0;                      // # of messages for this session
-        public string _msgFile = null;                    // message file storage
+        public long MsgCount = 0;                      // # of messages for this session
+        public string MsgFile = null;                    // message file storage
         private bool _earlyTalker = false;               // true the client is a "early talker"
         public int NoopCount = 0;                     // # of NOOP issued
         public int ErrCount = 0;                      // # of errors
@@ -99,6 +99,7 @@ namespace SMTPLibrary
         // init
         public SMTPSession(TcpClient client)
         {
+            Processor = ObjectFactory.GetInstance<IProcessor>();
             try
             {
                 _sessCount = AppGlobals.AddSession();
@@ -136,6 +137,7 @@ namespace SMTPLibrary
         {
             string cmdLine = "?";
             Context context = new Context { Session = this };
+            Processor.Context = context;
             CommandOk commandOk = new CommandOk();
             string response = commandOk.GetResponse();
             CmdID currCmd = CmdID.Invalid;
@@ -167,7 +169,7 @@ namespace SMTPLibrary
                     if ((isDnsListed) && (!AppGlobals.StoreData))
                     {
                         // if blacklisted and NOT storing messages
-                        SendLine(string.Format(Resources.MSG_442_ConnectionTimedOut, ClientIP, _dnsListName));
+                        SendLine(string.Format(Resources.MSG_442_ConnectionTimedOut, ClientIP, DNSListName));
                         CloseSession();
                         return;
                     }
@@ -206,8 +208,7 @@ namespace SMTPLibrary
                         response = Resources.MSG_422_MailboxExceededQuota;
                     else
                     {
-                        IProcessor processor = new FileProcessor { Context = context };
-                        processor.Process(mailMsg);
+                        Processor.Process(mailMsg);
                         if (AppGlobals.DoTempFail)
                         {
                             // emit a tempfail AFTER storing the mail DATA
@@ -321,7 +322,7 @@ namespace SMTPLibrary
                 if ((CmdID.Quit != currCmd) && (connOk))
                 {
                     string errMsg = null;
-                    if (_msgCount > AppGlobals.MaxMessages)
+                    if (MsgCount > AppGlobals.MaxMessages)
                     {
                         // above max # of message in a single session
                         errMsg = Resources.MSG_451_SessionMessagesCountExceeded;
@@ -365,6 +366,9 @@ namespace SMTPLibrary
             // close/reset this session
             CloseSession();
         }
+
+        protected IProcessor Processor { get; set; }
+
         #endregion
 
         #region "privatecode"
@@ -391,7 +395,7 @@ namespace SMTPLibrary
             LogSession(); // logs the session/message to file (if data available) 
             MailFrom = null;
             RcptTo = new List<string>();
-            _msgFile = null;
+            MsgFile = null;
             NoopCount = 0;
             ErrCount = 0;
             VrfyCount = 0;
@@ -646,9 +650,9 @@ namespace SMTPLibrary
                 string result = QueryDNS(queryString);
                 if (!string.IsNullOrEmpty(result))
                 {
-                    _dnsListType = listType;
-                    _dnsListName = t;
-                    _dnsListValue = result;
+                    DNSListType = listType;
+                    DNSListName = t;
+                    DNSListValue = result;
                     return true;
                 }
             }
@@ -730,8 +734,8 @@ namespace SMTPLibrary
         private void LogSession()
         {
             // check if already logged
-            if (_lastMsgID == _msgCount) return;
-            _lastMsgID = _msgCount;
+            if (_lastMsgID == MsgCount) return;
+            _lastMsgID = MsgCount;
 
             // check if we got some data
             if (string.IsNullOrEmpty(HeloStr)) HeloStr = "-no-helo-";
@@ -742,7 +746,7 @@ namespace SMTPLibrary
             List<string> cols = new List<string>
                 {
                     DateTime.UtcNow.ToString("u"),
-                    _startDate.ToString("u"),
+                    StartDate.ToString("u"),
                     _sessionID,
                     ClientIP,
                     HeloStr,
@@ -768,15 +772,15 @@ namespace SMTPLibrary
             }
 
             // message # and message file name (if any)
-            cols.Add(_msgCount.ToString());
-            cols.Add(!string.IsNullOrEmpty(_msgFile) ? _msgFile : "-no-file-");
+            cols.Add(MsgCount.ToString());
+            cols.Add(!string.IsNullOrEmpty(MsgFile) ? MsgFile : "-no-file-");
 
             // dns listing
-            if (!string.IsNullOrEmpty(_dnsListType))
+            if (!string.IsNullOrEmpty(DNSListType))
             {
-                cols.Add(_dnsListType);
-                cols.Add(_dnsListName);
-                cols.Add(_dnsListValue);
+                cols.Add(DNSListType);
+                cols.Add(DNSListName);
+                cols.Add(DNSListValue);
             }
             else
             {
